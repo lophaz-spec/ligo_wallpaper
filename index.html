@@ -915,9 +915,9 @@
             }
         }
 
-        function downloadCalendar() {
-            // 다운로드 링크를 열기 전에 카운터 증가
-            incrementDownloadCount();
+        async function downloadCalendar() {
+            // 다운로드 카운터 증가를 먼저 실행
+            await incrementDownloadCount();
             // 다운로드 페이지로 이동
             window.open(DOWNLOAD_URL, '_blank');
         }
