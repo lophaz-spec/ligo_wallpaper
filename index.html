@@ -1,6 +1,15 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4MV5DQJ3BJ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-4MV5DQJ3BJ');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ligo calendar 2026</title>
@@ -706,7 +715,7 @@
         </div>
         <div class="download-stats">
             <div>지금까지</div>
-            <div class="download-count" id="downloadCount">0</div>
+            <div class="download-count" id="downloadCount">6,250</div>
             <div>명이 다운로드했습니다</div>
         </div>
     </section>
@@ -892,44 +901,25 @@
 
         const GOOGLE_FORM_URL = "https://forms.gle/NoB4swwwcgu3xxfy5";
 
-        // 1. 페이지 로드 시 현재 다운로드 횟수를 가져오는 함수
+        // 1. ?섏씠吏 濡쒕뱶 ???꾩옱 ?ㅼ슫濡쒕뱶 ?잛닔 媛?몄삤???⑥닔
+        let currentDownloadCount = 6250;
+
         async function updateDisplay() {
-            const namespace = "ligo_calendar";
-            const key = "download_stats";
-            
-            try {
-                const response = await fetch(`https://api.countapi.xyz/get/${namespace}/${key}`);
-                const data = await response.json();
-                if(data.value) {
-                    document.getElementById('downloadCount').innerText = data.value.toLocaleString();
-                }
-            } catch (error) {
-                console.log("데이터를 불러오는데 실패했습니다.");
+            const storedCount = localStorage.getItem('downloadCount');
+            if (storedCount) {
+                currentDownloadCount = parseInt(storedCount, 10);
+            } else {
+                currentDownloadCount = 6250;
             }
+            document.getElementById('downloadCount').innerText = currentDownloadCount.toLocaleString();
         }
 
-        // 2. 다운로드 버튼 클릭 시 숫자를 1 올리는 함수
+        // 2. ?ㅼ슫濡쒕뱶 踰꾪듉 ?대┃ ???レ옄 1 ?щ━???⑥닔
         async function downloadCalendar() {
-            const namespace = "ligo_calendar";
-            const key = "download_stats";
-            
-            // ===== 다운로드 URL 설정 (아래 3가지 방법 중 1개 선택) =====
-            
-            // 방법 1: GitHub Raw URL (권장)
-            // const downloadUrl = "https://github.com/사용자명/저장소명/raw/main/ligo_calendar_2026_adjusted.zip";
-            
-            // 방법 2: GitHub Releases URL
-            // const downloadUrl = "https://github.com/사용자명/저장소명/releases/download/v1.0/ligo_calendar_2026_adjusted.zip";
-            
-            // 방법 3: 상대 경로 (같은 저장소 내)
+            // ===== ?ㅼ슫濡쒕뱶 寃쎈줈 ?ㅼ젙 =====
             const downloadUrl = "./ligo_calendar_2026_adjusted.zip";
             
-            // 방법 4: 외부 링크 (현재 설정)
-            // const downloadUrl = "https://naver.me/5kP8XP6f";
-            
-            // ===== 다운로드 실행 =====
-            
-            // 직접 다운로드 (방법 1, 2, 3용)
+            // ===== ?ㅼ슫濡쒕뱶 ?ㅽ뻾 =====
             const link = document.createElement('a');
             link.href = downloadUrl;
             link.download = 'ligo_calendar_2026.zip';
@@ -937,18 +927,17 @@
             link.click();
             document.body.removeChild(link);
             
-            // 새 탭에서 열기 (방법 4용 - 위 코드 대신 사용)
-            // window.open(downloadUrl, '_blank');
-            
-            // ===== 카운터 증가 =====
-            try {
-                const response = await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
-                const data = await response.json();
-                if(data.value) {
-                    document.getElementById('downloadCount').innerText = data.value.toLocaleString();
-                }
-            } catch (error) {
-                console.error("카운트 업데이트 실패:", error);
+            // ===== 移댁슫??利앷? =====
+            currentDownloadCount++;
+            localStorage.setItem('downloadCount', currentDownloadCount.toString());
+            document.getElementById('downloadCount').innerText = currentDownloadCount.toLocaleString();
+
+            // ===== Google 애널리틱스로 다운로드 이벤트 전송 =====
+            if (typeof gtag === 'function') {
+                gtag('event', 'file_download', {
+                    'file_name': 'ligo_calendar_2026.zip',
+                    'button_name': 'Free Download'
+                });
             }
         }
         
